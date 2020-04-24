@@ -1,14 +1,18 @@
 package org.CNS.View;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.prefs.BackingStoreException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -17,8 +21,8 @@ import org.CNS.Models.*;
 
 public class Window extends JFrame implements Runnable {
 
-	private final int w = 800; // resolution
-	private final int h = 800;
+	public final int w = 800; // resolution
+	public final int h = 800;
 
 	private final int FRAMES_TOTAL = 1000000;
 	private final int SKIP_FRAMES = 1;
@@ -31,8 +35,8 @@ public class Window extends JFrame implements Runnable {
 	private BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 	private BufferedImage sprites[] = new BufferedImage[3];
 
-	private int NumberCells = 5; // start number of groups of each type
-	private final int CELL_RADIUS = 20, ENERGY_RADIUS = 5;
+	private int NumberCells = 1; // start number of groups of each type
+	private final int CELL_RADIUS = 10, ENERGY_RADIUS = 3;
 
 	private ArrayList<Cell> cells = new ArrayList<>();
 	private ArrayList<Energy> energies = new ArrayList<>();
@@ -52,7 +56,7 @@ public class Window extends JFrame implements Runnable {
 		this.setLocation(500, 50);
 
 		for (int i = 0; i < NumberCells; i++) {
-			Cell c = new Cell((float) Math.random() * (w - 100) + 50, (float) Math.random() * (h - 100) + 50);
+			Cell c = new Cell((float) Math.random() * (w - 100) + 50, (float) Math.random() * (h - 100) + 50, this);
 			cells.add(c);
 		}
 
@@ -66,11 +70,12 @@ public class Window extends JFrame implements Runnable {
 			e.printStackTrace();
 		}
 
-		for (int i = 0; i < SKIP_FRAMES; i++)
-			logic();
 		Graphics2D g2 = buf.createGraphics();
 		g2.drawImage(img, null, 0, 0);
-		((Graphics2D) g).drawImage(buf, null, 8, 30);
+		((Graphics2D) g).drawImage(buf, null, 8, 31);
+
+		for (int i = 0; i < SKIP_FRAMES; i++)
+			logic();
 
 	}
 
