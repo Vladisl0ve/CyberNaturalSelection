@@ -35,7 +35,7 @@ public class Window extends JFrame implements Runnable {
 	private BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 	private BufferedImage sprites[] = new BufferedImage[3];
 
-	private int NumberCells = 1; // start number of groups of each type
+	private int NumberCells = 100; // start number of groups of each type
 	private final int CELL_RADIUS = 10, ENERGY_RADIUS = 3;
 
 	private ArrayList<Cell> cells = new ArrayList<>();
@@ -56,7 +56,7 @@ public class Window extends JFrame implements Runnable {
 		this.setLocation(500, 50);
 
 		for (int i = 0; i < NumberCells; i++) {
-			Cell c = new Cell((float) Math.random() * (w - 100) + 50, (float) Math.random() * (h - 100) + 50, this);
+			Cell c = new Cell((int) (Math.random() * (w - 100) + 50), (int) (Math.random() * (h - 100) + 50), this);
 			cells.add(c);
 		}
 
@@ -104,15 +104,27 @@ public class Window extends JFrame implements Runnable {
 	}
 
 	private void addNewEnergy() {
-		Energy e = new Energy((float) (Math.random() * (w - 100) + 50), (float) (Math.random() * (h - 100) + 50));
+		Energy e = new Energy((int) (Math.random() * (w - 100) + 50), (int) (Math.random() * (h - 100) + 50));
 		energies.add(e);
 	}
 
 	private void logic() {
 
-		if (frame % 10 == 0)
+		for (Cell c : cells) {
+			c.go(energies);
+			//System.out.println(c.energy);
+		}
+
+		if (frame % 1000 == 0)
 			addNewEnergy();
 		frame++;
+
+		for (int i = 0; i < energies.size(); i++) {
+			if (energies.get(i).toBeDeleted) {
+				energies.remove(i);
+				i--;
+			}
+		}
 
 	}
 

@@ -1,18 +1,24 @@
-		Natural Selection
-	There are cells with commands in random order. After some iterations natural selection makes 
-a new step in evolution: command's order becomes good enough for prosperity of life.
+# Cyber Natural Selection
+Cyber Natural Selection (CNS) is a Java simulation of cells with commands in random order. After some iterations natural selection makes a new step in evolution: commands order becomes good enough for prosperity of life.
 
-2nd TO DO List:
-1. Code logic for cells (command order) - DONE, version 0.01a
-2. Make a "Field4Life" (create environment)
-3. Develop "Round's rules" (each round - one generation)
+### TO DO List:
+* Make a "Field4Life" (create environment)
+* Develop "Round's rules" (each round - one generation)
+
+### TO CHANGE List:
+* I have object Window in Cell class, so every Cell object has that. I think that's not good for optimization. Fix that, Vladislove!!! (24.04.2020)
+* Still thinking on void-boolean functions "moveToDestX()" and "moveToDestY()"
 
 
+------------------------------------------------------------
 
+## Changelogs: 
 
-------------------------------
+### Version 0.01a
 
-Command order consists of some methods:
+* Command order consists of some methods:
+
+```
 [1] bool - findClosestEnergy ()
 [2] bool - moveN() - moving on North
 [3] bool - moveE() - on East
@@ -23,14 +29,24 @@ Command order consists of some methods:
 [8] void - pauseFrame() - do nothing, waiting for the next frame
 [9] bool (?) - moveToDestX() - doing one step on the X-line 
 [10] bool (?) - moveToDestY() - doing one step on the Y-line
+```
+* Minimized all objects on the screen-field (still testing)
+
+
+### Version 0.01b
+
+* Testing on cell's behavior completed well.
+* Changed *float* coordinates on *int*	
+
 
 
 
 ------------------------------
-DONE LISTS
+------------------------------
+## DONE TASKS
 
-1st TO DO List:
-1. Cell Class - DONE
-2. Energy Class - DONE
-3. Window Class - DONE
-4. Main Class - DONE
+* Cell Class - DONE
+* Energy Class - DONE
+* Window Class - DONE
+* Main Class - DONE
+* Code logic for cells (command order) - DONE, version 0.01a

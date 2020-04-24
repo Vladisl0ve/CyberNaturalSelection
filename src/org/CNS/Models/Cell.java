@@ -6,17 +6,17 @@ import org.CNS.View.Window;
 
 public class Cell {
 
-	public float x, y; // object's current coordinates
+	public int x, y; // object's current coordinates
 	public float destX, destY; // destination coordinates
 	public float speed = 0.1f, step = 5f;
 	public boolean toBeDeleted;
-	public int age = 0; // in frames
 
 	public Energy clEnergy = null; // closest energy
 	public Window win = null; // environment settings
 
-	public int commandSize = 9;
-	public int[] commandOrder = new int[commandSize];
+	public int commandSize = 10;
+	public int[] commandOrder = new int[commandSize * commandSize];
+	public int tick = 0;
 
 	public float sightDistance = 100f;
 	public float catchDistance = 6f;
@@ -26,7 +26,7 @@ public class Cell {
 
 	// public double rand = Math.random() * 100 + 1;
 
-	public Cell(float x, float y, Window w) {
+	public Cell(int x, int y, Window w) {
 		this.x = x;
 		this.y = y;
 		this.toBeDeleted = false;
@@ -35,7 +35,47 @@ public class Cell {
 			// System.out.println(commandOrder[i]);
 		}
 		this.win = w;
+	}
 
+	public void go(ArrayList<Energy> arrE) {
+		int command = tick % (commandSize * commandSize);
+
+		switch (commandOrder[command]) {
+		case 1:
+			findClosestEnergy(arrE);
+			break;
+		case 2:
+			moveN();
+			break;
+		case 3:
+			moveE();
+			break;
+		case 4:
+			moveS();
+			break;
+		case 5:
+			moveW();
+			break;
+		case 6:
+			lookAround();
+			break;
+		case 7:
+			eatUp();
+			break;
+		case 8:
+			pauseFrame();
+			break;
+		case 9:
+			moveToDestX();
+			break;
+		case 10:
+			moveToDestY();
+			break;
+		default:
+			System.out.println("lox");
+		}
+
+		tick++;
 	}
 
 	private boolean findClosestEnergy(ArrayList<Energy> arrE) { // [1] - looking for closest energy
@@ -59,7 +99,7 @@ public class Cell {
 	}
 
 	private boolean moveN() { // [2] - move North
-		if (this.y - 1 > 0) {
+		if (this.y - 31 >= 0) {
 			y -= 1;
 			return true;
 		} else
@@ -67,7 +107,7 @@ public class Cell {
 	}
 
 	private boolean moveE() { // [3] - move East
-		if (this.x + 1 < win.w) {
+		if (this.x + 31 <= win.w) {
 			x += 1;
 			return true;
 		} else
@@ -75,7 +115,7 @@ public class Cell {
 	}
 
 	private boolean moveS() { // [4] - move South
-		if (this.y + 1 < win.h) {
+		if (this.y + 37 <= win.h) {
 			y += 1;
 			return true;
 		} else
@@ -83,7 +123,7 @@ public class Cell {
 	}
 
 	private boolean moveW() { // [5] - move West
-		if (this.x - 1 > 0) {
+		if (this.x - 31 >= 0) {
 			x -= 1;
 			return true;
 		} else
