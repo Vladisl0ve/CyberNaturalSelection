@@ -1,20 +1,6 @@
 # Cyber Natural Selection
 Cyber Natural Selection (CNS) is a Java simulation of cells with commands in random order. After some iterations natural selection makes a new step in evolution: commands order becomes good enough for prosperity of life.
 
-
-### EARLY TO CHANGE List:
-* To rebalance rules;
-* To change some field's properties;
-* To allow cells move without borders (teleportation from south to north poles and back) - *consider about that*
-
-
-### LATE TO CHANGE List:
-* *To add GUI and visual settings* to change all properties without having knowledge in code-writting
-
-* To remove object Window in Cell class
-* Still thinking on void-boolean functions "moveToDestX()" and "moveToDestY()"
-
-
 ------------------------------------------------------------
 
 ## Changelogs: 
@@ -60,10 +46,26 @@ cell dies (and leave energy after itself).
 ```
 * Minimized all objects on the screen-field (still testing)
 
+-------------------------------
+### Rebalance questions:
+* To allow cells move without borders (teleportation from south to north poles and back) - *consider about that*
+* To make a one method instead of two for movingToDestination (X+Y, not X & Y)
+* To decrease energy for every step 
 
 
+-------------------------------
+
+### EARLY TO CHANGE List:
+* To rebalance rules;
+* To change some field's properties;
+* To write/read from file commandOrder (for explaining behavior of cells and watching thier evolution by facts)
 
 
+### LATE TO CHANGE List:
+* *To add GUI and visual settings* to change all properties without having knowledge in code-writting
+
+* To remove object Window in Cell class
+* Still thinking on void-boolean functions "moveToDestX()" and "moveToDestY()"
 
 ------------------------------
 ------------------------------
