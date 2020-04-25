@@ -15,14 +15,15 @@ public class Cell {
 	public Window win = null; // environment settings
 
 	public int commandSize = 10;
-	public int[] commandOrder = new int[commandSize * commandSize];
-	public int tick = 0;
+	public int commandOrderSize = commandSize * commandSize;
+	public int[] commandOrder = new int[commandOrderSize];
+	public int tick = 0; // == age
 
 	public float sightDistance = 100f;
 	public float catchDistance = 6f;
 
-	public float energy = 10f;
-	public float energyCapacity = 25f;
+	public int energy = 10;
+	public int energyCapacity = 25;
 
 	// public double rand = Math.random() * 100 + 1;
 
@@ -60,7 +61,7 @@ public class Cell {
 			lookAround();
 			break;
 		case 7:
-			eatUp();
+			eatUp(arrE);
 			break;
 		case 8:
 			pauseFrame();
@@ -75,6 +76,12 @@ public class Cell {
 			System.out.println("lox");
 		}
 
+		if (energy <= 0) {
+			this.toBeDeleted = true;
+		}
+
+		if (win.frame % 100 == 0)
+			energy--;
 		tick++;
 	}
 
@@ -99,7 +106,7 @@ public class Cell {
 	}
 
 	private boolean moveN() { // [2] - move North
-		if (this.y - 31 >= 0) {
+		if (this.y - 40 >= 0) {
 			y -= 1;
 			return true;
 		} else
@@ -107,7 +114,7 @@ public class Cell {
 	}
 
 	private boolean moveE() { // [3] - move East
-		if (this.x + 31 <= win.w) {
+		if (this.x + 40 <= win.w) {
 			x += 1;
 			return true;
 		} else
@@ -115,7 +122,7 @@ public class Cell {
 	}
 
 	private boolean moveS() { // [4] - move South
-		if (this.y + 37 <= win.h) {
+		if (this.y + 60 <= win.h) {
 			y += 1;
 			return true;
 		} else
@@ -123,7 +130,7 @@ public class Cell {
 	}
 
 	private boolean moveW() { // [5] - move West
-		if (this.x - 31 >= 0) {
+		if (this.x - 40 >= 0) {
 			x -= 1;
 			return true;
 		} else
@@ -134,13 +141,18 @@ public class Cell {
 		// nothing to do without walls
 	}
 
-	private boolean eatUp() { // [7] - eating up destinated energy
+	private boolean eatUp(ArrayList<Energy> arrE) { // [7] - eating up destinated energy
 
 		if (clEnergy != null) {
 			if (Math.abs(this.x - clEnergy.x) <= catchDistance) {
 				if (Math.abs(this.y - clEnergy.y) <= catchDistance) {
-					clEnergy.toBeDeleted = true;
-					this.energy++;
+
+					for (Energy e : arrE) {
+						if (e.x == clEnergy.x && e.y == clEnergy.y)
+							e.toBeDeleted = true;
+					}
+
+					this.energy += 5;
 					return true;
 				} else
 					return false;

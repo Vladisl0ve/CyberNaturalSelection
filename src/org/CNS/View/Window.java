@@ -1,42 +1,39 @@
 package org.CNS.View;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.Stroke;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.prefs.BackingStoreException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
-import org.CNS.Models.*;
+import org.CNS.Models.Cell;
+import org.CNS.Models.Energy;
 
 public class Window extends JFrame implements Runnable {
 
 	public final int w = 800; // resolution
 	public final int h = 800;
 
-	private final int FRAMES_TOTAL = 1000000;
-	private final int SKIP_FRAMES = 1;
-	private int frame = 0;
+	private final int FRAMES_TOTAL = 100000000;
+	private final int SKIP_FRAMES = 10;
+	public int frame = 0;
 
 	private final Color BG = new Color(200, 200, 200, 255);
-	private final Color BLUE = new Color(150, 160, 255, 255);
-	private final Color RED = new Color(255, 100, 120, 255);
 	private BufferedImage buf = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 	private BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 	private BufferedImage sprites[] = new BufferedImage[3];
 
-	private int NumberCells = 100; // start number of groups of each type
+	private int numberCellStart = 100; // start number of cells
+	private int numberEnergyStart = 50; // start number of energy
 	private final int CELL_RADIUS = 10, ENERGY_RADIUS = 3;
+	private int generationNumber = 0;
 
 	private ArrayList<Cell> cells = new ArrayList<>();
 	private ArrayList<Energy> energies = new ArrayList<>();
@@ -55,10 +52,7 @@ public class Window extends JFrame implements Runnable {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocation(500, 50);
 
-		for (int i = 0; i < NumberCells; i++) {
-			Cell c = new Cell((int) (Math.random() * (w - 100) + 50), (int) (Math.random() * (h - 100) + 50), this);
-			cells.add(c);
-		}
+		fillArrCells(cells);
 
 	}
 
@@ -74,9 +68,10 @@ public class Window extends JFrame implements Runnable {
 		g2.drawImage(img, null, 0, 0);
 		((Graphics2D) g).drawImage(buf, null, 8, 31);
 
-		for (int i = 0; i < SKIP_FRAMES; i++)
-			logic();
-
+		for (int i = 0; i < SKIP_FRAMES; i++) {
+			if (logic())
+				selectNextGeneration();
+		}
 	}
 
 	private void drawScene(BufferedImage image) throws IOException {
@@ -103,20 +98,81 @@ public class Window extends JFrame implements Runnable {
 
 	}
 
-	private void addNewEnergy() {
-		Energy e = new Energy((int) (Math.random() * (w - 100) + 50), (int) (Math.random() * (h - 100) + 50));
-		energies.add(e);
+	private void fillArrCells(ArrayList<Cell> cells) {
+		for (int i = 0; i < numberCellStart; i++) {
+			Cell c = new Cell((int) (Math.random() * (w - 100) + 50), (int) (Math.random() * (h - 100) + 50), this);
+			cells.add(c);
+		}
 	}
 
-	private void logic() {
+	private void addNewEnergy(ArrayList<Energy> arrE) {
+		Energy e = new Energy((int) (Math.random() * (w - 150) + 50), (int) (Math.random() * (h - 150) + 50));
+		arrE.add(e);
+	}
 
-		for (Cell c : cells) {
-			c.go(energies);
-			//System.out.println(c.energy);
+	private void selectNextGeneration() {
+		ArrayList<Cell> arrListMain = new ArrayList<Cell>();
+		ArrayList<Cell> arrListCopy = new ArrayList<Cell>();
+		int size = (int) Math.sqrt(numberCellStart);
+
+		for (int j = 0; j < cells.size(); j++) {
+			arrListCopy.add(cells.get(j));
+			for (int i = 0; i < size - 1; i++) {
+				arrListCopy.add(arrListCopy.get(0)); // arrListCopy[0] is always cloneable item
+
+				if (i > 0) {
+					randChangeGene(arrListCopy.get(i));
+				}
+			}
+
+			arrListMain.addAll(arrListCopy);
+			arrListCopy.clear();
 		}
 
-		if (frame % 1000 == 0)
-			addNewEnergy();
+		cells.clear();
+
+		fillArrCells(cells);
+		if (arrListMain.size() == cells.size()) {
+			for (int j = 0; j < cells.size(); j++) {
+				for (int i = 0; i < cells.get(j).commandOrderSize; i++) {
+					cells.get(j).commandOrder[i] = arrListMain.get(j).commandOrder[i];
+				}
+			}
+		} else
+			System.out.println("Error! #1");
+
+		energies.clear();
+		for (int i = 0; i < numberEnergyStart; i++) {
+			addNewEnergy(energies);
+		}
+		generationNumber++;
+	}
+
+	private void randChangeGene(Cell c) {
+		int geneNumber = (int) (Math.random() * c.commandOrderSize);
+		int newCommand = (int) (Math.random() * c.commandSize) + 1;
+
+		c.commandOrder[geneNumber] = newCommand;
+	}
+
+	private boolean logic() {
+
+		System.out.println(cells.size() + " " + generationNumber);
+
+		/*
+		 * ----------------- PROPERTY CHANGES OF CELLS ARE DOWN HERE ------------------
+		 */
+		for (Cell c : cells) {
+			c.go(energies);
+		}
+
+		/*
+		 * ----------- QUANTITY CHANGES OF CELLS AND ENERGY ARE DOWN HERE -----------
+		 */
+
+		if (frame % 30 == 0)
+			addNewEnergy(energies);
+
 		frame++;
 
 		for (int i = 0; i < energies.size(); i++) {
@@ -126,6 +182,21 @@ public class Window extends JFrame implements Runnable {
 			}
 		}
 
+		for (int i = 0; i < cells.size(); i++) {
+			if (cells.get(i).toBeDeleted) {
+				addNewEnergy(energies);
+				cells.remove(i);
+
+				/*
+				 * positive end of function (starting of creation new generation)
+				 */
+				if (cells.size() == (int) Math.sqrt(numberCellStart)) {
+					return true;
+				}
+				i--;
+			}
+		}
+		return false;
 	}
 
 	@Override
