@@ -7,8 +7,8 @@ Cyber Natural Selection (CNS) is a Java simulation of cells with commands in ran
 
 ### Version 0.1
 
-*Field4Life is done;
-*Round's rules are wrotten:
+* Field4Life is done;
+* Round's rules are written:
 ```
 Field with W x H (width and height).
 Start: 1. cells are seeking to have energy as much as they can. If energy becomes be less of normal, 
