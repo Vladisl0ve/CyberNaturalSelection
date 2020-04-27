@@ -25,6 +25,9 @@ public class Window extends JFrame implements Runnable {
 	private final int SKIP_FRAMES = 10;
 	public int frame = 0;
 
+	public int startFrame = 0;
+	public int endFrame = 0;
+
 	private final Color BG = new Color(200, 200, 200, 255);
 	private BufferedImage buf = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 	private BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
@@ -111,6 +114,7 @@ public class Window extends JFrame implements Runnable {
 	}
 
 	private void selectNextGeneration() {
+		endFrame = frame;
 		ArrayList<Cell> arrListMain = new ArrayList<Cell>();
 		ArrayList<Cell> arrListCopy = new ArrayList<Cell>();
 		int size = (int) Math.sqrt(numberCellStart);
@@ -145,7 +149,10 @@ public class Window extends JFrame implements Runnable {
 		for (int i = 0; i < numberEnergyStart; i++) {
 			addNewEnergy(energies);
 		}
+		System.out.println("Generation:\t" + generationNumber + "\nTicks:\t" + (endFrame - startFrame)+"\n");
+
 		generationNumber++;
+		startFrame = frame;
 	}
 
 	private void randChangeGene(Cell c) {
@@ -157,12 +164,13 @@ public class Window extends JFrame implements Runnable {
 
 	private boolean logic() {
 
-		System.out.println(cells.size() + " " + generationNumber);
+		// System.out.println(cells.size() + " " + generationNumber);
 
 		/*
 		 * ----------------- PROPERTY CHANGES OF CELLS ARE DOWN HERE ------------------
 		 */
 		for (Cell c : cells) {
+			//System.out.println(c.energy);
 			c.go(energies);
 		}
 

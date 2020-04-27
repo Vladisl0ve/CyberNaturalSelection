@@ -22,8 +22,8 @@ public class Cell {
 	public float sightDistance = 100f;
 	public float catchDistance = 6f;
 
-	public int energy = 10;
-	public int energyCapacity = 25;
+	public int energy = 100;
+	public int energyCapacity = 300;
 
 	// public double rand = Math.random() * 100 + 1;
 
@@ -46,16 +46,20 @@ public class Cell {
 			findClosestEnergy(arrE);
 			break;
 		case 2:
-			moveN();
+			if (moveN())
+				energy--;
 			break;
 		case 3:
-			moveE();
+			if (moveE())
+				energy--;
 			break;
 		case 4:
-			moveS();
+			if (moveS())
+				energy--;
 			break;
 		case 5:
-			moveW();
+			if (moveW())
+				energy--;
 			break;
 		case 6:
 			lookAround();
@@ -80,7 +84,7 @@ public class Cell {
 			this.toBeDeleted = true;
 		}
 
-		if (win.frame % 100 == 0)
+		if (win.frame % 1000 == 0)
 			energy--;
 		tick++;
 	}
@@ -109,8 +113,10 @@ public class Cell {
 		if (this.y - 40 >= 0) {
 			y -= 1;
 			return true;
-		} else
+		} else {
+			// this.y = (int) (Math.random() * (win.h - 100) + 50);
 			return false;
+		}
 	}
 
 	private boolean moveE() { // [3] - move East
@@ -125,8 +131,10 @@ public class Cell {
 		if (this.y + 60 <= win.h) {
 			y += 1;
 			return true;
-		} else
+		} else {
+			// this.y = (int) (Math.random() * (win.h - 100) + 50);
 			return false;
+		}
 	}
 
 	private boolean moveW() { // [5] - move West
@@ -143,6 +151,9 @@ public class Cell {
 
 	private boolean eatUp(ArrayList<Energy> arrE) { // [7] - eating up destinated energy
 
+		if (energy >= energyCapacity)
+			return false;
+
 		if (clEnergy != null) {
 			if (Math.abs(this.x - clEnergy.x) <= catchDistance) {
 				if (Math.abs(this.y - clEnergy.y) <= catchDistance) {
@@ -153,6 +164,7 @@ public class Cell {
 					}
 
 					this.energy += 5;
+					clEnergy = null;
 					return true;
 				} else
 					return false;

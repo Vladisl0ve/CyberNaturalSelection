@@ -5,6 +5,21 @@ Cyber Natural Selection (CNS) is a Java simulation of cells with commands in ran
 
 ## Changelogs: 
 
+### Version 0.1.1
+
+* Showing generation number + life time (temp. like a syso)
+* Balance changes
+* Bug fixes (stopping at the border)
+* Notice:
+```
+life span:
+1st generation: 300-400 ticks
+10th generation: 800+ ticks
+100th generation: 900+ ticks
+Then span is 800 - 1400 ticks, changes like a sinusoid.
+```
+
+
 ### Version 0.1
 
 *Field4Life is done;
