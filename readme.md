@@ -5,6 +5,9 @@ Cyber Natural Selection (CNS) is a Java simulation of cells with commands in ran
 
 ## Changelogs: 
 
+### Version 0.1.2
+*More balance fixes
+
 ### Version 0.1.1
 
 * Showing generation number + life time (temp. like a syso)
